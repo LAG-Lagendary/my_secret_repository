@@ -1,0 +1,54 @@
+#Базовая настройка Git (Связь с профилем)
+
+#Чтобы ваши изменения (коммиты) были подписаны вашим именем, нужно настроить глобальные данные пользователя.
+
+#Настройте имя пользователя:
+
+#Bash
+    git config --global user.name "Ваше Имя Пользователя"
+
+    #Настройте email:
+#Bash
+    git config --global user.email "ваш@email.com"
+
+
+    #Клонируйте репозиторий:
+#Bash
+    git clone https://github.com/вашник/имя-проекта.git
+
+
+#ВСПОМНИ ПРО ЗАЩИТУ!
+
+#Установка и настройка UFW (Uncomplicated Firewall)
+#Bash
+    sudo apt update
+    sudo apt install ufw
+    sudo ufw default deny incoming
+    sudo ufw default allow outgoing
+    sudo ufw enable
+    sudo ufw status verbose
+
+#Настройка логирования UFW (Минимум)
+    sudo ufw logging low
+
+#Журналы UFW обычно сохраняются в /var/log/ufw.log или в общих системных журналах (/var/log/syslog).
+
+#Установка и настройка AppArmor
+#Bash
+    sudo apt install apparmor apparmor-utils
+    sudo systemctl status apparmor
+    sudo aa-status
+
+#Логирование AppArmor
+#Логирование нарушений AppArmor обычно интегрировано в системный журнал syslog
+
+#Используйте grep для фильтрации системного журнала на предмет сообщений от AppArmor:
+#Bash
+sudo grep "apparmor" /var/log/syslog
+# ИЛИ (для современных систем с systemd):
+sudo journalctl | grep "apparmor"
+
+or install Auditd
+
+
+
