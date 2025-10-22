@@ -50,5 +50,14 @@ sudo journalctl | grep "apparmor"
 
 or install Auditd
 
+Установка VeraCrypt
+
+https://veracrypt.io/en/Downloads.html
+
+
+
+
+
+
 
 
