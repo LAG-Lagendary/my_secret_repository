@@ -53,6 +53,7 @@ alias ports='ss -tuln'
 alias cls='clear && history -c'
 #Редактировать основной файл конфига bash
 alias ebash='${EDITOR:-nano} ~/.bashrc'
+alias rebash='source ~/.bashrc'
 
 #4. РАБОТА С GIT
 alias gs='git status'
