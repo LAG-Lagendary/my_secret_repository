@@ -1,0 +1,78 @@
+#===============================================
+#BASH ALIASES AND FUNCTIONS CONFIGURATION
+#===============================================
+#1. НАВИГАЦИЯ И ФАЙЛОВАЯ СИСТЕМА
+#Быстрый переход на несколько уровней вверх
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+#Создать директорию и сразу перейти в нее
+mkcd() { mkdir -p "$1" && cd "$1" }
+alias mkcd=mkcd
+#Быстрый переход в домашнюю директорию и корень
+alias home='cd ~'
+alias top='cd /'
+#Показать размер текущей директории в удобочитаемом виде
+alias duf='du -sh *'
+#Показать информацию о дисковом пространстве
+alias dfh='df -h'
+#Копирование с прогрессом (использует rsync)
+cpr() { rsync -ah --progress "$1" "$2" }
+alias cpr=cpr
+#2. ИСТОРИЯ, ФАЙЛОВЫЕ УТИЛИТЫ И АРХИВЫ
+#вывести последние 30 команд
+alias h='history | tail -30'
+#ls aliases
+alias l='ls -CF'
+alias la='ls -A'
+alias ll='ls -alF'
+#делаем исполняемым для всех
+alias ax="chmod a+x"
+#попробовать в начале присоединиться к имеющейся сессии
+alias tm='tmux attach || tmux new'
+#работа с архивами
+alias TAR='tar -zcvf'
+alias UNTAR='tar -zxvf'
+#3. СИСТЕМНОЕ АДМИНИСТРИРОВАНИЕ И СЕТЬ
+#обновить инфу в пакетном менеджере (для Debian/Ubuntu)
+alias update="sudo apt update"
+alias UU="sudo apt update && sudo apt upgrade -y"
+#перечитать конфиг Bash
+alias bash-reload='source ~/.bashrc'
+#Показать 10 самых ресурсоемких процессов по памяти
+alias top10='ps aux --sort=-%mem | head -11'
+#Показать текущий публичный IP адрес
+alias myip='curl ifconfig.me' # Раскомментируйте для активации
+#Простой вывод сетевых прослушивающих портов (аналог netstat)
+alias ports='ss -tuln'
+#Очистить экран и историю команд в буфере терминала
+alias cls='clear && history -c'
+#Редактировать основной файл конфига bash
+alias ebash='${EDITOR:-nano} ~/.bashrc'
+#4. РАБОТА С GIT
+alias gs='git status'
+alias gd='git diff'
+alias gitb='git branch -v'
+alias gitc='git commit -m'
+alias gitcam='git commit -a -m'
+alias githist='git log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short'
+alias gl='git log --graph --pretty=format:'''%C(yellow)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset''' --abbrev-commit --date=short '
+alias go='git checkout'
+#Дополнительные алиасы git
+alias gadd='git add .'
+alias gpush='git push'
+alias gpull='git pull'
+alias gco='git checkout'
+#5. СПЕЦИАЛЬНЫЕ СКРИПТЫ И VPN
+alias shull="~/ollama_cli.sh"
+alias ovpn1='sudo openvpn --config /etc/openvpn/XXX.ovpn'
+alias ovpn2='sudo openvpn --config /etc/openvpn/XYZ.ovpn'
+alias ovpn3='sudo openvpn --config /etc/openvpn/ZZZ.ovpn'
+alias ovpn4='sudo openvpn --config /etc/openvpn/ZXC.ovpn'
+alias pt='python3 /home/lag/Documents/python.py'
+#Быстрое создание временного пароля/ключа
+alias genpass='openssl rand -base64 20'
+#6. ФУНКЦИИ-ОБОЛОЧКИ
+#ОПРЕДЕЛЕНИЕ КОМАНДЫ 'AISH' В BASH (для перехода в Zsh)
+aish() { exec zsh }
