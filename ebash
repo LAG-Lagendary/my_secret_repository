@@ -7,9 +7,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
-#Создать директорию и сразу перейти в нее
-mkcd() { mkdir -p "$1" && cd "$1" }
-alias mkcd=mkcd
 #Быстрый переход в домашнюю директорию и корень
 alias home='cd ~'
 alias top='cd /'
@@ -17,9 +14,14 @@ alias top='cd /'
 alias duf='du -sh *'
 #Показать информацию о дисковом пространстве
 alias dfh='df -h'
-#Копирование с прогрессом (использует rsync)
-cpr() { rsync -ah --progress "$1" "$2" }
-alias cpr=cpr
+#Создать директорию и сразу перейти в нее
+mkcd1() { mkdir -p "$1" && cd "$1"; }
+alias mkcd=mkcd1
+# Копирование с прогрессом (использует rsync
+cpr() {
+  rsync -ah --progress "$1" "$2"
+}
+
 #2. ИСТОРИЯ, ФАЙЛОВЫЕ УТИЛИТЫ И АРХИВЫ
 #вывести последние 30 команд
 alias h='history | tail -30'
@@ -34,6 +36,7 @@ alias tm='tmux attach || tmux new'
 #работа с архивами
 alias TAR='tar -zcvf'
 alias UNTAR='tar -zxvf'
+
 #3. СИСТЕМНОЕ АДМИНИСТРИРОВАНИЕ И СЕТЬ
 #обновить инфу в пакетном менеджере (для Debian/Ubuntu)
 alias update="sudo apt update"
@@ -50,6 +53,7 @@ alias ports='ss -tuln'
 alias cls='clear && history -c'
 #Редактировать основной файл конфига bash
 alias ebash='${EDITOR:-nano} ~/.bashrc'
+
 #4. РАБОТА С GIT
 alias gs='git status'
 alias gd='git diff'
@@ -57,13 +61,13 @@ alias gitb='git branch -v'
 alias gitc='git commit -m'
 alias gitcam='git commit -a -m'
 alias githist='git log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short'
-alias gl='git log --graph --pretty=format:'''%C(yellow)%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset''' --abbrev-commit --date=short '
 alias go='git checkout'
 #Дополнительные алиасы git
 alias gadd='git add .'
 alias gpush='git push'
 alias gpull='git pull'
 alias gco='git checkout'
+
 #5. СПЕЦИАЛЬНЫЕ СКРИПТЫ И VPN
 alias shull="~/ollama_cli.sh"
 alias ovpn1='sudo openvpn --config /etc/openvpn/XXX.ovpn'
@@ -73,6 +77,4 @@ alias ovpn4='sudo openvpn --config /etc/openvpn/ZXC.ovpn'
 alias pt='python3 /home/lag/Documents/python.py'
 #Быстрое создание временного пароля/ключа
 alias genpass='openssl rand -base64 20'
-#6. ФУНКЦИИ-ОБОЛОЧКИ
-#ОПРЕДЕЛЕНИЕ КОМАНДЫ 'AISH' В BASH (для перехода в Zsh)
-aish() { exec zsh }
+
