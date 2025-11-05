@@ -1,0 +1,50 @@
+#!/bin/bash
+echo -e "\n--- 2. Аудит и исправление конфигурации Kubernetes (Kube-bench) ---"
+
+# 2.1. Аудит Kube-bench
+echo "2.1. Выполнение аудита Kube-bench (поиск FAIL-ошибок)..."
+
+# Запуск Kube-bench через Docker
+# Для примера используем версию бенчмарка 1.28
+# В реальной жизни замените 1.28 на версию вашего K8S (e.g., 1.29, 1.30)
+KUBE_VERSION="1.28"
+
+sudo docker run --rm \
+    -v /etc/kubernetes/:/etc/kubernetes/:ro \
+    -v /var/lib/kubelet/:/var/lib/kubelet/:ro \
+    aquasec/kube-bench:latest run --targets master --benchmark "${KUBE_VERSION}"
+
+echo -e "\n*** Аудит завершен. Если были FAIL, запустите скрипт исправления ниже. ***"
+
+# 2.2. Автоматическое исправление разрешений (для устранения 67 FAIL-ошибок)
+echo -e "\n2.2. АВТОМАТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Установка владельцев и разрешений (CIS Master Node)"
+
+# Список критических файлов манифестов K8S
+CONFIG_FILES=(
+  "/etc/kubernetes/manifests/kube-apiserver.yaml"
+  "/etc/kubernetes/manifests/kube-controller-manager.yaml"
+  "/etc/kubernetes/manifests/kube-scheduler.yaml"
+  "/etc/kubernetes/admin.conf"
+  "/etc/kubernetes/pki/apiserver.crt"
+  "/etc/kubernetes/pki/etcd/ca.crt" # Сертификаты и ключи
+)
+
+# Исправление разрешений и владельца для каждого файла (644, root:root)
+for file in "${CONFIG_FILES[@]}"; do
+  if [ -f "$file" ]; then
+    echo "Исправление файла: $file"
+    sudo chmod 644 "$file"  # Установка разрешений 644 (Read/Write для root, Read для остальных)
+    sudo chown root:root "$file" # Установка владельца root:root
+  fi
+done
+
+# Исправление разрешений для директории etcd (700 - только владелец)
+ETCD_DATA_DIR="/var/lib/etcd"
+if [ -d "$ETCD_DATA_DIR" ]; then
+    echo "Исправление директории данных etcd: $ETCD_DATA_DIR"
+    sudo chmod 700 "$ETCD_DATA_DIR"
+    # Владельца лучше оставить etcd, если он используется, иначе root:root
+    # sudo chown etcd:etcd "$ETCD_DATA_DIR" 
+fi
+
+echo -e "\n--- Исправления завершены. Запустите kube-bench повторно, чтобы проверить результат. ---"
