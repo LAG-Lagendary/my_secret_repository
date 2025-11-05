@@ -1,0 +1,47 @@
+#!/bin/bash
+echo "--- 1. Установка базовых зависимостей и Docker-инструментов Aqua Security ---"
+
+# Убедимся, что установлены curl и git для работы с GitHub и Docker
+sudo apt update
+sudo apt install -y curl git
+
+# 1.1. Функция для запуска Trivy (сканер уязвимостей)
+run_trivy_audit() {
+    echo -e "\n--- 1.2. ЗАПУСК TRIVY: Сканирование локального образа ---"
+    
+    # Для примера используем стандартный образ nginx
+    IMAGE_TO_SCAN="nginx:latest"
+    echo "Сканирование образа: ${IMAGE_TO_SCAN}"
+    
+    # Запуск Trivy через Docker. Флаг '--exit-code 1' завершит работу с ошибкой,
+    # если будут найдены критические уязвимости (для CI/CD).
+    sudo docker run --rm aquasec/trivy:latest image \
+        --severity CRITICAL,HIGH \
+        --exit-code 0 \
+        "${IMAGE_TO_SCAN}"
+    
+    echo -e "\n*** Аудит Trivy завершен. Проверьте вывод на наличие CRITICAL/HIGH уязвимостей. ***"
+}
+
+# 1.2. Функция для запуска Tracee (runtime-мониторинг)
+run_tracee_monitor() {
+    echo -e "\n--- 1.3. ЗАПУСК TRACEE: Мониторинг активности хост-системы ---"
+    echo "Tracee будет работать, пока вы не нажмете Ctrl+C."
+    echo "Он будет выводить системные события и оповещения безопасности."
+    
+    # Используем рекомендованную команду с правильным монтированием os-release
+    sudo docker run --name tracee -it --rm \
+        --pid=host --cgroupns=host --privileged \
+        -v /etc/os-release:/etc/os-release-host:ro \
+        -v /var/run:/var/run:ro \
+        aquasec/tracee:latest
+}
+
+# Запуск аудита Trivy
+run_trivy_audit
+
+# Запуск мониторинга Tracee (закомментировано, чтобы не блокировать выполнение скрипта)
+# Если вы хотите, чтобы скрипт сразу запустил Tracee, удалите знак '#'
+# run_tracee_monitor
+
+echo -e "\n--- Часть 1 завершена: Trivy и Tracee успешно протестированы. ---"
