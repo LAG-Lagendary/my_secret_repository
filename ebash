@@ -83,40 +83,32 @@ alias genpass='openssl rand -base64 20'
 # --- Определите стили Prompt ---
 #===============================================
 
-
 # 1. Установите переменную для выбора стиля
-# Вы можете изменить 'twoline' на 'oneline' или 'backtrack'
-# для выбора другого внешнего вида при старте терминала.
 PROMPT_ALTERNATIVE="twoline"
 
 # 2. Определите переменные для кодов цвета ANSI
-# Важно: В Bash коды цвета должны быть заключены в \[\033[...m\] для корректной работы курсора.
-# (Иначе Bash не сможет правильно посчитать ширину строки)
-PROMPT_COLOR='\[\033[0;36m\]'  # Голубой/Циан
-INFO_COLOR='\[\033[0;32m\]'   # Зеленый
-RESET_COLOR='\[\033[0m\]'     # Сброс цвета
-RED_COLOR='\[\033[0;31m\]'    # Красный
-BOLD='\[\033[1m\]'           # Жирный
-NO_BOLD='\[\033[0m\]'         # Нежирный
+# ВАЖНО: \[\033[...m\] используется, чтобы Bash правильно считал ширину Prompt.
+PROMPT_COLOR='\[\033[0;36m\]'  # Голубой/Циан (Цвет рамки)
+PURPLE_COLOR='\[\033[0;35m\]' # ФИОЛЕТОВЫЙ/ПУРПУРНЫЙ (Цвет user@host)
+RESET_COLOR='\[\033[0m\]'     # Сброс цвета
+RED_COLOR='\[\033[0;31m\]'    # Красный
+BOLD='\[\033[1m\]'           # Жирный
+NO_BOLD='\[\033[0m\]'         # Нежирный
 
 # 3. Функция, которая будет устанавливать PS1
 configure_bash_prompt() {
     # Здесь используется переменная, которую мы установили выше
     case "$PROMPT_ALTERNATIVE" in
         twoline)
-            # Двустрочный Prompt: 
-            # ┌──(user@host)-[/current/dir]
-            # └─$ 
-            PS1="$PROMPT_COLOR┌──${BOLD}${INFO_COLOR}\u@\h${PROMPT_COLOR}${NO_BOLD}-[\w]${RESET_COLOR}\n${PROMPT_COLOR}└─${BOLD}\$ ${RESET_COLOR}"
+            # Двустрочный Prompt: ┌──(user@host - ФИОЛЕТОВЫЙ)-[/current/dir]\n└─$ 
+            PS1="$PROMPT_COLOR┌──${BOLD}${PURPLE_COLOR}\u@\h${PROMPT_COLOR}${NO_BOLD}-[\w]${RESET_COLOR}\n${PROMPT_COLOR}└─${BOLD}\$ ${RESET_COLOR}"
             ;;
         oneline)
-            # Однострочный (классический)
-            # user@host:/current/dir$ 
-            PS1="${INFO_COLOR}\u@\h${RESET_COLOR}:${PROMPT_COLOR}\w${RESET_COLOR}\$ "
+            # Однострочный (классический): user@host - ФИОЛЕТОВЫЙ:dir$ 
+            PS1="${PURPLE_COLOR}\u@\h${RESET_COLOR}:${PROMPT_COLOR}\w${RESET_COLOR}\$ "
             ;;
         backtrack)
-            # Однострочный (с альтернативными цветами, как в Вашем примере)
-            # user@host:/current/dir$ 
+            # Однострочный (с альтернативными цветами: КРАСНЫЙ user@host)
             PS1="${RED_COLOR}\u@\h${RESET_COLOR}:${PROMPT_COLOR}\w${RESET_COLOR}\$ "
             ;;
         *)
